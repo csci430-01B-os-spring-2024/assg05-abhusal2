@@ -199,6 +199,24 @@ void SchedulingSystem::dispatchCpuIfIdle()
     }
   }
 }
+/**
+ * implement checkProcessFinished() fucntion 
+*/
+void SchedulingSystem::checkProcessFinished()
+{
+  if (isCpuIdle())
+  {
+    return;
+  }
+
+  if (process[cpu].usedTime >= process[cpu].serviceTime)
+  {
+    process[cpu].endTime = systemTime;
+    process[cpu].done = true;
+
+    cpu = IDLE;
+  }
+}
 /** @brief get pid of running process
  *
  * Returns the process identifier (pid) of the process
