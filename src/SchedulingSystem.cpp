@@ -184,7 +184,21 @@ bool SchedulingSystem::allProcessesDone() const
   }
   return true;
 }
+/**
+ * implement dispatchCpuIfIdle() function
+*/
+void SchedulingSystem::dispatchCpuIfIdle()
+{
 
+  if (isCpuIdle())
+  {
+    cpu = policy->dispatch();
+    if (process[cpu].startTime == NOT_STARTED)
+    {
+      process[cpu].startTime = systemTime;
+    }
+  }
+}
 /** @brief get pid of running process
  *
  * Returns the process identifier (pid) of the process
