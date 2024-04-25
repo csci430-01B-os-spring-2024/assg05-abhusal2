@@ -129,6 +129,94 @@ void SchedulingSystem::resetSystem()
   policy->resetPolicy();
 }
 
+/**
+ * implement the getSystemTime() function
+ * returns the current time of the simulator as an int
+*/
+int SchedulingSystem::getSystemTime() const
+{
+  return systemTime;
+}
+
+/**
+ * implement getNumProcesses() function
+ * returns the number of processes as an int 
+*/
+int SchedulingSystem::getNumProcesses() const
+{
+  return numProcesses;
+}
+/**
+ *  implement the isCpuIdle funtion 
+ * returns true if cpu id idle and false if not
+*/
+bool SchedulingSystem::isCpuIdle() const
+{
+  return cpu == -1;
+}
+/**
+ * implement the getRunningProcessNmae() function 
+ * returns a string contaning name of running process "IDLE"
+*/
+string SchedulingSystem::getRunningProcessName() const
+{
+  if (isCpuIdle())
+  {
+    return "IDLE";
+  }
+  else
+  {
+    return process[cpu].name;
+  }
+}
+/**
+ * implement allProcessesDone() fucntion 
+ * returns true of all process is f=done and false if not
+*/
+bool SchedulingSystem::allProcessesDone() const
+{
+  for (int i = 0; i < numProcesses; ++i)
+  {
+    if (!process[i].done)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+/**
+ * implement dispatchCpuIfIdle() function
+*/
+void SchedulingSystem::dispatchCpuIfIdle()
+{
+
+  if (isCpuIdle())
+  {
+    cpu = policy->dispatch();
+    if (process[cpu].startTime == NOT_STARTED)
+    {
+      process[cpu].startTime = systemTime;
+    }
+  }
+}
+/**
+ * implement checkProcessFinished() fucntion 
+*/
+void SchedulingSystem::checkProcessFinished()
+{
+  if (isCpuIdle())
+  {
+    return;
+  }
+
+  if (process[cpu].usedTime >= process[cpu].serviceTime)
+  {
+    process[cpu].endTime = systemTime;
+    process[cpu].done = true;
+
+    cpu = IDLE;
+  }
+}
 /** @brief get pid of running process
  *
  * Returns the process identifier (pid) of the process
@@ -584,7 +672,7 @@ void SchedulingSystem::runSimulation(bool verbose)
   // to make scheduling decisions.  We keep running the simulation until
   // all processes in the process table are done
   string schedule = "";
-  /*
+  
   while (not allProcessesDone())
   {
     //cout << "runSimulation()> systemTime: " << systemTime << endl;
@@ -610,7 +698,7 @@ void SchedulingSystem::runSimulation(bool verbose)
     // is up to date for scheduling policies to use
     updateProcessStatistics();
   }
-  */
+  
 
   // Display scheduling simulation results if asked too
   if (verbose)
