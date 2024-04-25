@@ -169,6 +169,22 @@ string SchedulingSystem::getRunningProcessName() const
     return process[cpu].name;
   }
 }
+/**
+ * implement allProcessesDone() fucntion 
+ * returns true of all process is f=done and false if not
+*/
+bool SchedulingSystem::allProcessesDone() const
+{
+  for (int i = 0; i < numProcesses; ++i)
+  {
+    if (!process[i].done)
+    {
+      return false;
+    }
+  }
+  return true;
+}
+
 /** @brief get pid of running process
  *
  * Returns the process identifier (pid) of the process
